@@ -1,0 +1,8 @@
+[project]
+name = "face-to-bmi-prediction"
+version = "0.1.0"
+description = "Configurable Face-to-BMI ML project with M1-M3 experiments."
+requires-python = ">=3.10"
+
+[tool.black]
+line-length = 100

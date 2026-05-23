@@ -1,0 +1,53 @@
+project:
+  name: "face_bmi_project"
+  seed: 42
+
+paths:
+  raw_csv: "data/raw/data.csv"
+  raw_images_dir: "data/raw/Images"
+  processed_dir: "data/processed"
+  splits_dir: "data/splits"
+  models_dir: "models"
+  metrics_dir: "outputs/metrics"
+  plots_dir: "outputs/plots"
+
+data:
+  image_col: "name"
+  bmi_col: "bmi"
+  gender_col: "gender"
+  split_col: "is_training"
+  image_size: 224
+  valid_extensions: [".jpg", ".jpeg", ".png", ".bmp"]
+
+training:
+  batch_size: 32
+  epochs: 20
+  learning_rate: 0.0001
+  num_workers: 2
+  device: "auto"   # auto, cpu, mps, cuda
+
+models:
+  m1:
+    name: "vgg16_imagenet_dense"
+    backbone: "vgg16"
+    frozen: true
+    head_hidden_units: [256, 64]
+    dropout: 0.30
+
+  m2:
+    name: "resnet50_multitask"
+    backbone: "resnet50"
+    frozen: true
+    fine_tune_last_block: true
+    bmi_loss_weight: 1.0
+    gender_loss_weight: 0.2
+    head_hidden_units: [256, 64]
+    dropout: 0.30
+
+  m3:
+    name: "efficientnet_finetune"
+    backbone: "efficientnet_b0"
+    frozen: false
+    unfreeze_last_n_blocks: 2
+    head_hidden_units: [256, 64]
+    dropout: 0.40

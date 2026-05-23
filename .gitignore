@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+data/raw/Images/*
+data/raw/*.csv
+data/processed/*
+data/splits/*
+models/*
+outputs/*
+*.pt
+*.pth
+*.pkl
+*.joblib
