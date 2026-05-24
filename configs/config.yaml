@@ -83,3 +83,37 @@ models:
     fine_tune_last_block: true
     head_hidden_units: [256, 64]
     dropout: 0.20
+
+m2:
+  # Data
+  csv_path: "data/raw/data.csv"
+  img_dir:  "data/raw/Images"
+  batch_size: 32
+  img_size: 224
+  num_workers: 4
+  use_stratified_sampler: true
+
+  # Training phases
+  epochs_phase1: 10
+  epochs_phase2: 35
+  epochs_phase3: 15
+
+  # Learning rates
+  lr_backbone:  0.000005
+  lr_head:      0.0003
+  weight_decay: 0.0001
+
+  # Loss
+  huber_delta: 5.0
+  use_uncertainty_weighting: true
+
+  # Regularisation
+  dropout_shared: 0.30
+  dropout_bmi:    0.40
+  dropout_gender: 0.30
+  label_noise_std: 0.5
+  mixup_prob: 0.5
+  clip_grad: 1.0
+
+  # Output
+  save_dir: "reports/m2"
