@@ -44,6 +44,12 @@ training:
     learning_rate: 0.00003
     weight_decay: 0.0001
 
+  resnet50_bmi_only:
+    batch_size: 16
+    epochs: 30
+    learning_rate: 0.00003
+    weight_decay: 0.00005
+
 models:
   m1:
     name: "vgg16_imagenet_dense"
@@ -69,3 +75,11 @@ models:
     unfreeze_last_n_blocks: 2
     head_hidden_units: [256, 64]
     dropout: 0.40
+    
+  resnet50_bmi_only:
+    name: "resnet50_bmi_only"
+    backbone: "resnet50"
+    frozen: true
+    fine_tune_last_block: true
+    head_hidden_units: [256, 64]
+    dropout: 0.20
