@@ -5,8 +5,18 @@ from PIL import Image
 
 MODEL_REGISTRY = {
     "vgg16_baseline": {"label": "VGG16", "subtitle": "Baseline", "tag": "M1", "best_r": "0.4227"},
-    "resnet50_multitask": {"label": "ResNet50", "subtitle": "Multi-Task", "tag": "M2", "best_r": "0.5798"},
-    "efficientnet_finetune": {"label": "EfficientNet", "subtitle": "Fine-Tune", "tag": "M3", "best_r": "0.4942"},
+    "resnet50_multitask": {
+        "label": "ResNet50",
+        "subtitle": "Multi-Task",
+        "tag": "M2",
+        "best_r": "0.6811",
+    },
+   "efficientnet_finetune": {
+        "label": "EfficientNet",
+        "subtitle": "Fine-Tune",
+        "tag": "M3",
+        "best_r": "0.5532",
+    },
     "resnet50_bmi_only": {"label": "ResNet50", "subtitle": "BMI-Only", "tag": "M2B", "best_r": "0.5771"},
 }
 

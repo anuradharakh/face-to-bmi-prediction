@@ -34,15 +34,15 @@ training:
 
   resnet50_multitask:
     batch_size: 16
-    epochs: 20
-    learning_rate: 0.00005
-    weight_decay: 0.00001
+    epochs: 35
+    learning_rate: 0.00003
+    weight_decay: 0.0001
 
   efficientnet_finetune:
     batch_size: 16
-    epochs: 25
-    learning_rate: 0.00003
-    weight_decay: 0.0001
+    epochs: 35
+    learning_rate: 0.00002
+    weight_decay: 0.00005
 
   resnet50_bmi_only:
     batch_size: 16
@@ -63,18 +63,18 @@ models:
     backbone: "resnet50"
     frozen: true
     fine_tune_last_block: true
-    bmi_loss_weight: 0.0
-    gender_loss_weight: 0.2
+    bmi_loss_weight: 1.0
+    gender_loss_weight: 0.10
     head_hidden_units: [256, 64]
-    dropout: 0.3
+    dropout: 0.25
 
   m3:
     name: "efficientnet_finetune"
     backbone: "efficientnet_b0"
     frozen: false
-    unfreeze_last_n_blocks: 2
+    unfreeze_last_n_blocks: 3
     head_hidden_units: [256, 64]
-    dropout: 0.40
+    dropout: 0.30
     
   resnet50_bmi_only:
     name: "resnet50_bmi_only"
