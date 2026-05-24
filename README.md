@@ -1,66 +1,113 @@
-# Face-to-BMI Final Project
 
-A configurable, step-by-step project repository for BMI prediction from face images.
+# Face-to-BMI Prediction using Deep Learning
 
-## Our finalized model plan
+Deep learning project for predicting BMI from facial images using transfer learning, multi-task learning, and fine-tuning strategies.
 
-| Model | Type | Goal |
+## Final Results
+
+| Model | Description | Pearson r |
 |---|---|---|
-| M1 | VGG16 ImageNet frozen backbone + 1–2 dense layers | Baseline feature extraction |
-| M2 | ResNet50 multi-task model: BMI regression + gender classification | Main model to beat paper |
-| M3 | EfficientNet fine-tuning with last blocks unfrozen | Advanced fine-tuning model |
+| M1 | VGG16 Baseline | 0.4227 |
+| M3 | EfficientNet Fine-Tune | 0.5532 |
+| M2B | ResNet50 BMI-Only | 0.5771 |
+| M2 | ResNet50 Multi-Task | **0.6811** |
 
-## Local Mac setup
+## Best Model
 
-This project is designed to run locally on your MacBook Pro with 96GB RAM.
+ResNet50 Multi-Task Learning achieved:
 
-We will use:
-- PyTorch
-- Apple MPS when available
-- YAML configuration files
-- Streamlit frontend
+- Pearson Correlation = 0.6811
+- Surpassed paper benchmark of 0.6500
 
-## Expected data format
+---
 
-Place your files like this:
+## Models
 
-```text
-data/raw/data.csv
-data/raw/Images/
-```
+### M1 — VGG16 Baseline
+- Frozen VGG16 ImageNet backbone
+- Dense regression head
+- Transfer learning baseline
 
-CSV expected columns:
+Result:
+- Pearson r = 0.4227
 
-```text
-bmi, gender, is_training, name
-```
+---
 
-Example image path:
+### M2 — ResNet50 Multi-Task
+Architecture:
+- Shared ResNet50 backbone
+- BMI regression head
+- Gender classification head
 
-```text
-data/raw/Images/img_0.bmp
-```
+Improvements:
+- Fine-tuned last ResNet block
+- Lower learning rate
+- Reduced gender loss weight
+- Longer training
+- Better regularization
 
-## Setup
+Final Result:
+- Pearson r = 0.6811
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+---
 
-## Step 1 command
+### M3 — EfficientNet Fine-Tuning
+Improvements:
+- Unfroze last 3 EfficientNet blocks
+- Reduced learning rate
+- Fine-tuning strategy
 
-After placing the dataset:
+Final Result:
+- Pearson r = 0.5532
 
-```bash
-python scripts/01_check_data.py
-```
+---
 
-This verifies:
-- CSV exists
-- image folder exists
-- required columns exist
-- image files can be found
-- train/test split is readable
+### M2B — ResNet50 BMI-Only
+Purpose:
+- Ablation study removing gender classification
+
+Observation:
+- Removing gender slightly reduced performance
+
+Final Result:
+- Pearson r = 0.5771
+
+---
+
+## Streamlit Frontend
+
+Features:
+- Upload image
+- Webcam capture
+- Toggle models on/off
+- Multi-model comparison
+- Loading spinner
+- Clear/reset buttons
+- Dark modern UI
+
+Run:
+
+streamlit run app/streamlit_app.py
+
+---
+
+## Key Concepts
+
+- Transfer learning
+- Fine-tuning
+- Multi-task learning
+- CNN feature extraction
+- Regression
+- Data augmentation
+- Hyperparameter tuning
+- Streamlit deployment
+
+---
+
+## Conclusion
+
+The final ResNet50 multi-task model achieved:
+
+Pearson r = 0.6811
+
+which surpassed the original research benchmark.
