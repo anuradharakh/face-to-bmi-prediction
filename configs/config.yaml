@@ -18,13 +18,31 @@ data:
   split_col: "is_training"
   image_size: 224
   valid_extensions: [".jpg", ".jpeg", ".png", ".bmp"]
+  gender_map:
+    Female: 0
+    Male: 1
 
 training:
-  batch_size: 32
-  epochs: 20
-  learning_rate: 0.0001
-  num_workers: 2
-  device: "auto"   # auto, cpu, mps, cuda
+  device: "auto"
+  num_workers: 0
+
+  vgg16_baseline:
+    batch_size: 32
+    epochs: 20
+    learning_rate: 0.0001
+    weight_decay: 0.0001
+
+  resnet50_multitask:
+    batch_size: 16
+    epochs: 20
+    learning_rate: 0.00005
+    weight_decay: 0.00001
+
+  efficientnet_finetune:
+    batch_size: 16
+    epochs: 25
+    learning_rate: 0.00003
+    weight_decay: 0.0001
 
 models:
   m1:
@@ -39,10 +57,10 @@ models:
     backbone: "resnet50"
     frozen: true
     fine_tune_last_block: true
-    bmi_loss_weight: 1.0
+    bmi_loss_weight: 0.0
     gender_loss_weight: 0.2
     head_hidden_units: [256, 64]
-    dropout: 0.30
+    dropout: 0.3
 
   m3:
     name: "efficientnet_finetune"
