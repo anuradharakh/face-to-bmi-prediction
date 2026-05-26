@@ -111,3 +111,156 @@ The final ResNet50 multi-task model achieved:
 Pearson r = 0.6811
 
 which surpassed the original research benchmark.
+
+
+# Run Training Scripts
+
+## Step 1 — Activate Virtual Environment
+
+```bash
+source .venv/bin/activate
+```
+
+---
+
+## Step 2 — Data Preparation Pipeline
+
+## Check Dataset
+
+```bash
+python scripts/01_check_data.py
+```
+
+Validates:
+- CSV structure
+- missing images
+- dataset statistics
+
+---
+
+## Prepare Dataset
+
+```bash
+python scripts/02_prepare_dataset.py
+```
+
+Creates cleaned train/test CSV files.
+
+---
+
+## Test Dataloader
+
+```bash
+python scripts/03_test_dataloader.py
+```
+
+Verifies:
+- image loading
+- transforms
+- tensor shapes
+
+---
+
+## Test Metrics
+
+```bash
+python scripts/04_test_metrics.py
+```
+
+Tests:
+- MAE
+- RMSE
+- Pearson correlation
+- R² score
+
+---
+
+# Step 3 — Train Models
+
+## M1 — VGG16 Baseline
+
+```bash
+python scripts/05_train_m1_vgg16.py
+```
+
+Output:
+- `models/m1_vgg16_best.pt`
+- `models/m1_vgg16_best.onnx`
+
+---
+
+## M2 — ResNet50 Multi-Task (Best Model)
+
+```bash
+python scripts/06_train_m2_resnet50_multitask.py
+```
+
+Output:
+- `models/resnet50_multitask_best.pt`
+- `models/resnet50_multitask_best.onnx`
+
+Best result:
+
+```text
+Pearson r = 0.6811
+```
+
+---
+
+## M3 — EfficientNet Fine-Tuning
+
+```bash
+python scripts/07_train_efficientnet_finetune.py
+```
+
+Output:
+- `models/efficientnet_finetune_best.pt`
+- `models/efficientnet_finetune_best.onnx`
+
+---
+
+## M2B — ResNet50 BMI-Only
+
+```bash
+python scripts/08_train_resnet50_bmi_only.py
+```
+
+Output:
+- `models/resnet50_bmi_only_best.pt`
+- `models/resnet50_bmi_only_best.onnx`
+
+---
+
+# Step 4 — Run Streamlit Application
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+Features:
+- image upload
+- webcam capture
+- model selection
+- prediction comparison
+- loading spinner
+- reset/clear functionality
+
+---
+
+# Optional — Run Multiple Models in Parallel
+
+Example:
+
+## Terminal 1
+
+```bash
+python scripts/06_train_m2_resnet50_multitask.py
+```
+
+## Terminal 2
+
+```bash
+python scripts/07_train_efficientnet_finetune.py
+```
+
+Recommended for Apple Silicon Macs with high memory.

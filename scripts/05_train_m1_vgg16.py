@@ -14,7 +14,10 @@ from face_bmi.utils import set_seed, get_device
 from face_bmi.data.dataset import FaceBMIDataset
 from face_bmi.models.m1_vgg16 import VGG16BMIRegressor
 from face_bmi.training.metrics import regression_metrics
-
+from face_bmi.training.onnx_export import (
+    export_bmi_model_to_onnx,
+    export_multitask_model_to_onnx,
+)
 
 def run_epoch(model, loader, criterion, optimizer, device, train=True):
     model.train() if train else model.eval()
@@ -155,12 +158,16 @@ def main():
         if test_metrics["pearson_r"] > best_pearson:
             best_pearson = test_metrics["pearson_r"]
 
-            torch.save(
-                model.state_dict(),
-                "models/vgg16_baseline_best.pt",
-            )
+            pt_path = "models/m1_vgg16_best.pt"
+            onnx_path = "models/m1_vgg16_best.onnx"
 
-            print("Saved new best VGG16 baseline model.")
+            torch.save(model.state_dict(), pt_path)
+            export_bmi_model_to_onnx(model, onnx_path, device)
+            model.train()
+
+            print("Saved new best VGG16 model.")
+            print(f"Saved PT: {pt_path}")
+            print(f"Saved ONNX: {onnx_path}")
 
     with open(
         "outputs/metrics/vgg16_baseline_history.json",
