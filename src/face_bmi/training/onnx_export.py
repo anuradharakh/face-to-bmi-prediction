@@ -25,7 +25,7 @@ def export_bmi_model_to_onnx(model, onnx_path, device):
         do_constant_folding=True,
         input_names=["input"],
         output_names=["bmi_output"],
-        external_data=False,
+        external_data=True,
     )
 
 
@@ -44,5 +44,5 @@ def export_multitask_model_to_onnx(model, onnx_path, device):
         do_constant_folding=True,
         input_names=["input"],
         output_names=["bmi_output", "gender_logits"],
-        external_data=False,
+        external_data=True,
     )

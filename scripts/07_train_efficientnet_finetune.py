@@ -176,8 +176,8 @@ def main():
         if test_metrics["pearson_r"] > best_pearson:
             best_pearson = test_metrics["pearson_r"]
 
-            pt_path = "models/efficientnet_finetune_best.pt"
-            onnx_path = "models/efficientnet_finetune_best.onnx"
+            pt_path = "models/efficientnet_finetuned.pt"
+            onnx_path = "models/efficientnet_finetuned.onnx"
 
             torch.save(model.state_dict(), pt_path)
             export_bmi_model_to_onnx(model, onnx_path, device)
