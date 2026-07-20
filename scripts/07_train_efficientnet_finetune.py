@@ -17,6 +17,7 @@ from face_bmi.training.metrics import regression_metrics
 from face_bmi.training.onnx_export import (
     export_bmi_model_to_onnx,
     export_multitask_model_to_onnx,
+    export_bmi_gender_model_to_onnx
 )
 
 def run_epoch(model, loader, criterion, optimizer, device, train=True):
@@ -31,7 +32,8 @@ def run_epoch(model, loader, criterion, optimizer, device, train=True):
         bmi = batch["bmi"].to(device)
 
         with torch.set_grad_enabled(train):
-            preds = model(images)
+            gender = batch["gender"].to(device)
+            preds = model(images, gender)
             loss = criterion(preds, bmi)
 
             if train:
@@ -122,7 +124,10 @@ def main():
     print(f"Trainable parameters: {trainable_params:,}")
     print(f"Total parameters: {total_params:,}")
 
-    criterion = nn.MSELoss()
+    #criterion = nn.MSELoss()
+    criterion = nn.HuberLoss(
+        delta=train_cfg.get("huber_delta", 5.0)
+    )
 
     optimizer = torch.optim.AdamW(
         filter(lambda p: p.requires_grad, model.parameters()),
@@ -180,7 +185,7 @@ def main():
             onnx_path = "models/efficientnet_finetuned.onnx"
 
             torch.save(model.state_dict(), pt_path)
-            export_bmi_model_to_onnx(model, onnx_path, device)
+            export_bmi_gender_model_to_onnx(model, onnx_path, device)
             model.train()
 
             print("Saved new best EfficientNet model.")

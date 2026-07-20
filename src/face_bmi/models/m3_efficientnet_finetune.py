@@ -6,12 +6,15 @@ from torchvision import models
 class EfficientNetBMIRegressor(nn.Module):
     def __init__(
         self,
-        hidden_units=(256, 64),
-        dropout=0.4,
-        unfreeze_last_n_blocks=2,
+        hidden_units=(512, 128),
+        dropout=0.2,
+        unfreeze_last_n_blocks=4,
         backbone_name="efficientnet_b0",
+        use_gender=True,
     ):
         super().__init__()
+
+        self.use_gender = use_gender
 
         if backbone_name == "efficientnet_b0":
             weights = models.EfficientNet_B0_Weights.IMAGENET1K_V1
@@ -35,20 +38,36 @@ class EfficientNetBMIRegressor(nn.Module):
 
         self.backbone = backbone
 
-        layers = []
-        prev = in_features
+        gender_dim = 16 if use_gender else 0
 
-        for hidden in hidden_units:
-            layers.append(nn.Linear(prev, hidden))
-            layers.append(nn.ReLU())
-            layers.append(nn.Dropout(dropout))
-            prev = hidden
+        if use_gender:
+            self.gender_embedding = nn.Sequential(
+                nn.Linear(1, 16),
+                nn.ReLU(),
+            )
 
-        layers.append(nn.Linear(prev, 1))
+        self.regressor = nn.Sequential(
+            nn.Linear(in_features + gender_dim, hidden_units[0]),
+            nn.ReLU(),
+            nn.Dropout(dropout),
 
-        self.regressor = nn.Sequential(*layers)
+            nn.Linear(hidden_units[0], hidden_units[1]),
+            nn.ReLU(),
+            nn.Dropout(dropout),
 
-    def forward(self, x):
+            nn.Linear(hidden_units[1], 1),
+        )
+
+    def forward(self, x, gender=None):
         features = self.backbone(x)
+
+        if self.use_gender:
+            if gender is None:
+                raise ValueError("Gender input is required when use_gender=True")
+
+            gender = gender.float().view(-1, 1)
+            gender_features = self.gender_embedding(gender)
+            features = torch.cat([features, gender_features], dim=1)
+
         bmi = self.regressor(features).squeeze(1)
         return bmi

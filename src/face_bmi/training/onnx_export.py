@@ -46,3 +46,21 @@ def export_multitask_model_to_onnx(model, onnx_path, device):
         output_names=["bmi_output", "gender_logits"],
         external_data=True,
     )
+
+def export_bmi_gender_model_to_onnx(model, onnx_path, device):
+    model.eval()
+
+    dummy_image = torch.randn(1, 3, 224, 224).to(device)
+    dummy_gender = torch.tensor([1], dtype=torch.long).to(device)
+
+    torch.onnx.export(
+        model,
+        (dummy_image, dummy_gender),
+        onnx_path,
+        export_params=True,
+        opset_version=18,
+        do_constant_folding=True,
+        input_names=["input_image", "input_gender"],
+        output_names=["bmi_output"],
+        external_data=True,
+    )

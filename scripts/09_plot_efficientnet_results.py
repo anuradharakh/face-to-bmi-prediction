@@ -24,13 +24,28 @@ def plot_training_curve(history_path, output_path):
     test_mae = [h["test"]["mae"] for h in history]
 
     plt.figure(figsize=(7, 4.5))
-    plt.plot(epochs, train_mae, marker="o", label="Train MAE")
-    plt.plot(epochs, test_mae, marker="o", label="Validation/Test MAE")
+
+    plt.plot(
+        epochs,
+        train_mae,
+        marker="o",
+        label="Train MAE",
+    )
+
+    plt.plot(
+        epochs,
+        test_mae,
+        marker="o",
+        label="Validation/Test MAE",
+    )
+
     plt.xlabel("Epoch")
     plt.ylabel("MAE")
     plt.title("EfficientNet-B0 Training vs Validation MAE")
+
     plt.legend()
     plt.grid(True, alpha=0.3)
+
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
@@ -59,10 +74,14 @@ def plot_predicted_vs_actual(cfg, output_path):
         dropout=m3_cfg["dropout"],
         unfreeze_last_n_blocks=m3_cfg["unfreeze_last_n_blocks"],
         backbone_name=m3_cfg.get("backbone", "efficientnet_b0"),
+        use_gender=m3_cfg.get("use_gender", True),
     ).to(device)
 
     model.load_state_dict(
-        torch.load("models/efficientnet_finetuned.pt", map_location=device)
+        torch.load(
+            "models/efficientnet_finetuned.pt",
+            map_location=device,
+        )
     )
 
     model.eval()
@@ -74,8 +93,9 @@ def plot_predicted_vs_actual(cfg, output_path):
         for batch in loader:
             images = batch["image"].to(device)
             bmi = batch["bmi"].to(device)
+            gender = batch["gender"].to(device)
 
-            preds = model(images)
+            preds = model(images, gender)
 
             y_true.extend(bmi.cpu().numpy())
             y_pred.extend(preds.cpu().numpy())
@@ -83,18 +103,31 @@ def plot_predicted_vs_actual(cfg, output_path):
     metrics = regression_metrics(y_true, y_pred)
 
     plt.figure(figsize=(6, 5))
-    plt.scatter(y_true, y_pred, alpha=0.6)
+
+    plt.scatter(
+        y_true,
+        y_pred,
+        alpha=0.6,
+    )
+
     plt.plot(
         [min(y_true), max(y_true)],
         [min(y_true), max(y_true)],
         linestyle="--",
         label="Ideal prediction",
     )
+
     plt.xlabel("Actual BMI")
     plt.ylabel("Predicted BMI")
-    plt.title(f"EfficientNet-B0 Predicted vs Actual BMI\nPearson r = {metrics['pearson_r']:.4f}")
+
+    plt.title(
+        f"EfficientNet-B0 Predicted vs Actual BMI\n"
+        f"Pearson r = {metrics['pearson_r']:.4f}"
+    )
+
     plt.legend()
     plt.grid(True, alpha=0.3)
+
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.close()
@@ -105,7 +138,10 @@ def plot_predicted_vs_actual(cfg, output_path):
 def main():
     cfg = load_config()
 
-    Path("outputs/plots").mkdir(parents=True, exist_ok=True)
+    Path("outputs/plots").mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     plot_training_curve(
         history_path="outputs/metrics/efficientnet_finetune_history.json",
@@ -117,7 +153,7 @@ def main():
         output_path="outputs/plots/efficientnet_predicted_vs_actual.png",
     )
 
-    print("Saved plots:")
+    print("\nSaved plots:")
     print(" - outputs/plots/efficientnet_mae_curve.png")
     print(" - outputs/plots/efficientnet_predicted_vs_actual.png")
 

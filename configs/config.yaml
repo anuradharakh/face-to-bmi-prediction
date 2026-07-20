@@ -39,10 +39,12 @@ training:
     weight_decay: 0.0001
 
   efficientnet_finetune:
-    batch_size: 16
-    epochs: 35
-    learning_rate: 0.00002
+    batch_size: 8
+    epochs: 60
+    learning_rate: 0.00001
     weight_decay: 0.00005
+    loss: "huber"
+    huber_delta: 5.0
 
   resnet50_bmi_only:
     batch_size: 16
@@ -72,9 +74,10 @@ models:
     name: "efficientnet_finetune"
     backbone: "efficientnet_b0"
     frozen: false
-    unfreeze_last_n_blocks: 3
-    head_hidden_units: [256, 64]
-    dropout: 0.30
+    unfreeze_last_n_blocks: 4
+    head_hidden_units: [512, 128]
+    dropout: 0.20
+    use_gender: true
     
   resnet50_bmi_only:
     name: "resnet50_bmi_only"
